@@ -50,7 +50,7 @@ namespace coffee.Api
                 //For Dev enviroment only (on production should be AllowInsecureHttp = false)
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/oauth2/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(10000),
                 Provider = new CustomOAuthProvider(),
                 //TODO: CHANGE THIS TO YOUR URL
                 AccessTokenFormat = new CustomJwtFormat("http://localhost:5819")
@@ -87,6 +87,7 @@ namespace coffee.Api
 
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         }
     }
 }

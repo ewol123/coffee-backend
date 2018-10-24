@@ -17,5 +17,9 @@ namespace coffee.Api.Models
         [Display(Name = "ItemsPerPage")]
         public string ItemsPerPage { get; set; }
 
+        [Required]
+        [Display(Name ="Query")]
+        public string Query { get; set; }
+
     }
 }
