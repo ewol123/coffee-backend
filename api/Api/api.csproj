@@ -234,7 +234,10 @@
     <Compile Include="Entities\IngredientCoffees.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\OrderedProduct.cs" />
-    <Compile Include="Entities\ProductComposition.cs" />
+    <Compile Include="Migrations\201810272253147_coffeeStrength.cs" />
+    <Compile Include="Migrations\201810272253147_coffeeStrength.Designer.cs">
+      <DependentUpon>201810272253147_coffeeStrength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Providers\CustomJwtFormat.cs" />
     <Compile Include="Infrastructure\ApplicationDbContext.cs" />
     <Compile Include="Infrastructure\ApplicationRoleManager.cs" />
@@ -258,6 +261,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201810192131062_firstCommit.resx">
       <DependentUpon>201810192131062_firstCommit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810272253147_coffeeStrength.resx">
+      <DependentUpon>201810272253147_coffeeStrength.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

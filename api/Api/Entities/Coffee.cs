@@ -30,11 +30,12 @@ namespace coffee.Api.Entities
         [Required]
         public string Description { get; set; }
 
+        [Required]
+        public int Strength { get; set; }
 
 
         public virtual ICollection<IngredientCoffees> Ingredients { get; set; }
         public virtual ICollection<OrderedProduct> OrderedProducts { get; set; }
-        public virtual ICollection<ProductComposition> ProductCompositions { get; set; }
 
 
     }
