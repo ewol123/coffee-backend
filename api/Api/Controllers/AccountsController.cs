@@ -21,6 +21,7 @@ namespace coffee.Api.Controllers
         public async Task<IHttpActionResult> AssignRolesToUser([FromUri] string id, [FromBody] string[] rolesToAssign)
         {
 
+
             var appUser = await this.AppUserManager.FindByIdAsync(id);
 
             if (appUser == null)
@@ -133,7 +134,7 @@ namespace coffee.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             IdentityResult result = await this.AppUserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)

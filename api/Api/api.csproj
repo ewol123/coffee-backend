@@ -227,6 +227,7 @@
     <Compile Include="Controllers\AudienceController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\CoffeeController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Entities\Audience.cs" />
     <Compile Include="Entities\Coffee.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="Migrations\201810272253147_coffeeStrength.Designer.cs">
       <DependentUpon>201810272253147_coffeeStrength.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\OrderBindingModel.cs" />
     <Compile Include="Providers\CustomJwtFormat.cs" />
     <Compile Include="Infrastructure\ApplicationDbContext.cs" />
     <Compile Include="Infrastructure\ApplicationRoleManager.cs" />

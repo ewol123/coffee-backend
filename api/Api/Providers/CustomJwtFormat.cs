@@ -2,6 +2,7 @@
 using coffee.Api.Models;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataHandler.Encoder;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -58,6 +59,8 @@ namespace coffee.Api.Formats
             var handler = new JwtSecurityTokenHandler();
 
             var jwt = handler.WriteToken(token);
+
+      
 
             return jwt;
         }
