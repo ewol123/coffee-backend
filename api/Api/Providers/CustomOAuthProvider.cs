@@ -33,7 +33,6 @@ namespace coffee.Api.Providers
                 return Task.FromResult<object>(null);
             }
 
-            //TODO: once again, you should store the audience in a database
             var audience = AudiencesStore.FindAudience(context.ClientId);
             
 
@@ -66,10 +65,8 @@ namespace coffee.Api.Providers
                 return;
             }
 
-            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, "JWT");
-
-
-
+            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, context.Options.AuthenticationType);
+            oAuthIdentity.AddClaim(new Claim("userId", user.Id));
             var props = new AuthenticationProperties(new Dictionary<string, string>
                 {
                     {

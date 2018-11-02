@@ -8,8 +8,7 @@ namespace Api.Models
 {
     public class OrderBindingModel
     {
-        [Required]
-        public string UserId { get; set; }
+       
         [Required]
         public string TableNum { get; set; }
 

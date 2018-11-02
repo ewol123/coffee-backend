@@ -1,4 +1,5 @@
-﻿using coffee.Api.Infrastructure;
+﻿using coffee.Api.Entities;
+using coffee.Api.Infrastructure;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -48,23 +49,40 @@ namespace coffee.Api.Models
             };
         }
 
+        public OrderReturnModel Create(OrderedProduct op) {
+
+            var price = int.Parse(op.Coffee.Price);
+            var totalPrice = op.Quantity * price;
+
+            return new OrderReturnModel
+            {
+                Name = op.Coffee.Name,
+                ImagePath = op.Coffee.ImagePath,
+                Price = op.Coffee.Price,
+                Description = op.Coffee.Description,
+                Strength = op.Coffee.Strength,
+                Quantity = op.Quantity,
+                TotalPrice = totalPrice,
+            };
+
+        }
 
 
     }
 
-    public class UserReturnModel
-    {
-        public string Url { get; set; }
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public bool EmailConfirmed { get; set; }
-        public int Level { get; set; }
-        public DateTime JoinDate { get; set; }
-        public IList<string> Roles { get; set; }
-        public IList<System.Security.Claims.Claim> Claims { get; set; }
-    }
+        public class UserReturnModel
+        {
+            public string Url { get; set; }
+            public string Id { get; set; }
+            public string UserName { get; set; }
+            public string FullName { get; set; }
+            public string Email { get; set; }
+            public bool EmailConfirmed { get; set; }
+            public int Level { get; set; }
+            public DateTime JoinDate { get; set; }
+            public IList<string> Roles { get; set; }
+            public IList<System.Security.Claims.Claim> Claims { get; set; }
+        }
 
 
         public class RoleReturnModel
@@ -73,6 +91,23 @@ namespace coffee.Api.Models
             public string Id { get; set; }
             public string Name { get; set; }
         }
+
+        public class OrderReturnModel
+        {
+        public string Name { get; set; }
+        public string ImagePath { get; set; }
+        public string Price { get; set; }
+        public string Description { get; set; }
+        public int Strength { get; set; }
+        public int Quantity { get; set; }
+        public int TotalPrice { get; set; }
+        }
+
+    public class OrdersReturnModel
+    {
+        public int AllPrice { get; set; }
+        public List<OrderReturnModel> orders { get; set; }
+    }
 
 
 

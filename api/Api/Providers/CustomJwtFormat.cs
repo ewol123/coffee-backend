@@ -41,7 +41,9 @@ namespace coffee.Api.Formats
 
             string audienceId = audience.ClientId;
 
+
             string symmetricKeyAsBase64 = audience.Base64Secret;
+
 
             var keyByteArray = TextEncodings.Base64Url.Decode(symmetricKeyAsBase64);
 

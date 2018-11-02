@@ -21,7 +21,6 @@ namespace coffee.Api.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                //TODO: store audience in a database
                Audience newAudience = AudiencesStore.AddAudience(audienceModel.Name);
 
                 return Ok(newAudience);

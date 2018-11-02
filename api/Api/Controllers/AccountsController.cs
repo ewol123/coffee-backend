@@ -3,6 +3,7 @@ using coffee.Api.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,7 +21,6 @@ namespace coffee.Api.Controllers
         [HttpPut]
         public async Task<IHttpActionResult> AssignRolesToUser([FromUri] string id, [FromBody] string[] rolesToAssign)
         {
-
 
             var appUser = await this.AppUserManager.FindByIdAsync(id);
 
@@ -144,6 +144,78 @@ namespace coffee.Api.Controllers
 
             return Ok();
         }
+
+
+        [AllowAnonymous]
+        [Route("SendPasswordReset")]
+        [HttpGet]
+        public async Task<IHttpActionResult> SendPasswordReset(string email)
+        {
+            try
+            {
+                var db = ApplicationDbContext.Create();
+
+                if (email == null)
+                {
+                    return BadRequest();
+                }
+
+                var user = await this.AppUserManager.FindByEmailAsync(email);
+
+                if (user == null)
+                {
+
+                    return NotFound();
+                }
+                var resetToken = this.AppUserManager.GeneratePasswordResetTokenAsync(user.Id);
+
+                await this.AppUserManager.SendEmailAsync(user.Id, "Confirmation code", $"Your code:{resetToken.Result}");
+
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.ToString());
+            }
+        }
+
+        [AllowAnonymous]
+        [Route("ProvideToken")]
+        [HttpGet]
+        public async Task<IHttpActionResult> ProvideToken(string token, string email, string newPass)
+        {
+            try
+            {
+                var db = ApplicationDbContext.Create();
+
+                var user = await this.AppUserManager.FindByEmailAsync(email);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var code = token.Replace(" ", "+");
+               
+                IdentityResult passwordChangeResult = await AppUserManager.ResetPasswordAsync(user.Id, code, newPass);
+
+                if (!passwordChangeResult.Succeeded)
+                {
+                    return GetErrorResult(passwordChangeResult);
+                }
+
+                return Ok("Password changed");
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.ToString());
+            }
+
+        }
+
 
         //delete account
 

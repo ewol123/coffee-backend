@@ -18,6 +18,7 @@ using System.Web.Http;
 
 namespace coffee.Api
 {
+
     public class Startup
     {
         public void Configuration(IAppBuilder app)
@@ -31,7 +32,6 @@ namespace coffee.Api
             ConfigureWebApi(config);
 
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-
             app.UseWebApi(config);
 
         }
@@ -50,7 +50,9 @@ namespace coffee.Api
                 //For Dev enviroment only (on production should be AllowInsecureHttp = false)
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/oauth2/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(10000),
+
+                //Note to self: Don't change this to 10000, it causes unauthorized error with the token :)
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
                 Provider = new CustomOAuthProvider(),
                 //TODO: CHANGE THIS TO YOUR URL
                 AccessTokenFormat = new CustomJwtFormat("http://localhost:5819")
@@ -84,6 +86,7 @@ namespace coffee.Api
         private void ConfigureWebApi(HttpConfiguration config)
         {
             config.MapHttpAttributeRoutes();
+            config.EnableSystemDiagnosticsTracing();
 
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

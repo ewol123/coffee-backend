@@ -32,8 +32,6 @@ namespace coffee.Api.Services
            
 
             var client = new SendGridClient(ConfigurationManager.AppSettings["as:emailKey"]);
-            var response = await client.SendEmailAsync(myMessage);
-
 
 
             // Send the email.

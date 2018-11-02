@@ -28,16 +28,16 @@ namespace coffee.Api.Migrations
 
 
 
-            var user = new ApplicationUser()
+            var admin = new ApplicationUser()
             {
-                UserName = "gypeti23@gmail.com",
-                Email = "gypeti23@gmail.com",
+                UserName = "admin@coffeeshop.com",
+                Email = "admin@coffeeshop.com",
                 EmailConfirmed = true,
                 Level = 1,
                 JoinDate = DateTime.Now.AddYears(-3)
             };
 
-            manager.Create(user, "Admin123!");
+            manager.Create(admin, "Admin123!");
 
             if (roleManager.Roles.Count() == 0)
             {
@@ -46,9 +46,33 @@ namespace coffee.Api.Migrations
                 roleManager.Create(new IdentityRole { Name = "User" });
             }
 
-            var adminUser = manager.FindByName("gypeti23@gmail.com");
+            var adminUser = manager.FindByName("admin@coffeeshop.com");
 
             manager.AddToRoles(adminUser.Id, new string[] { "SuperAdmin", "Admin", "User" });
+
+
+
+            var user = new ApplicationUser()
+            {
+                UserName = "user@coffeeshop.com",
+                Email = "user@coffeeshop.com",
+                EmailConfirmed = true,
+                Level = 1,
+                JoinDate = DateTime.Now.AddYears(-3)
+
+            };
+
+            manager.Create(user, "Hello123!");
+
+            var normalUser = manager.FindByName("user@coffeeshop.com");
+
+            manager.AddToRoles(normalUser.Id, new string[] {"User"});
+
+            context.Audiences.AddOrUpdate(aud =>aud.ClientId, new Audience {
+                ClientId ="5bd1d38ccf7a428ab3b963ac8bd1e4de",
+                Base64Secret ="8Yf2gwxzD1iL0K7bKciHKDQlKbFKyCYzUc-XfUucsX0",
+                Name ="First audience"
+             });
 
             //create initial ingredients
             context.Ingredients.AddOrUpdate(ingr => ingr.Name,
@@ -107,17 +131,17 @@ namespace coffee.Api.Migrations
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = americano, Ingredient = coffeePowder, amount = 19 });
 
-            var bonbón = new Coffee
+            var bonbÃ³n = new Coffee
             {
-                Name = "Bonbón",
+                Name = "BonbÃ³n",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299732/coffee/bonb%C3%B3n.jpg",
                 Price = "4",
                 Strength = 2,
-                Description = "Cafe Bonbón was made popular in Valencia, Spain, and spread gradually to the rest of the country. It uses espresso served with sweetened condensed milk in a 1:1 ratio."
+                Description = "Cafe BonbÃ³n was made popular in Valencia, Spain, and spread gradually to the rest of the country. It uses espresso served with sweetened condensed milk in a 1:1 ratio."
             };
 
-            context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = bonbón, Ingredient = coffeePowder, amount = 8 });
-            context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = bonbón, Ingredient = condensedMilk, amount = 8 });
+            context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = bonbÃ³n, Ingredient = coffeePowder, amount = 8 });
+            context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = bonbÃ³n, Ingredient = condensedMilk, amount = 8 });
 
             var borgia = new Coffee
             {
@@ -134,11 +158,11 @@ namespace coffee.Api.Migrations
 
             var auLait = new Coffee
             {
-                Name = "Café au lait",
+                Name = "CafÃ© au lait",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299733/coffee/cafeaulait.jpg",
                 Price = "6",
                 Strength = 3,
-                Description = "Café au lait is coffee with hot milk added. It differs from white coffee, which is coffee with cold milk or other whitener added. "
+                Description = "CafÃ© au lait is coffee with hot milk added. It differs from white coffee, which is coffee with cold milk or other whitener added. "
             };
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = auLait, Ingredient = coffeePowder, amount = 19 });
@@ -146,7 +170,7 @@ namespace coffee.Api.Migrations
 
             var affogato = new Coffee
             {
-                Name = "Café affogato",
+                Name = "CafÃ© affogato",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299732/coffee/caf%C3%A9affogato.jpg",
                 Price = "6",
                 Strength = 2,
@@ -159,7 +183,7 @@ namespace coffee.Api.Migrations
 
             var conhielo = new Coffee
             {
-                Name = "Café con hielo",
+                Name = "CafÃ© con hielo",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299732/coffee/caf%C3%A9conhielo.jpg",
                 Price = "4",
                 Strength = 3,
@@ -171,18 +195,18 @@ namespace coffee.Api.Migrations
 
             var conleche = new Coffee
             {
-                Name = "Café con leche",
+                Name = "CafÃ© con leche",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299733/coffee/caf%C3%A9conleche.jpg",
                 Price = "5",
                 Strength = 4,
-                Description = "Café con leche (Spanish: 'coffee with milk') is a Spanish coffee beverage consisting of strong and bold coffee (usually espresso) mixed with scalded milk in approximately a 1:1 ratio."
+                Description = "CafÃ© con leche (Spanish: 'coffee with milk') is a Spanish coffee beverage consisting of strong and bold coffee (usually espresso) mixed with scalded milk in approximately a 1:1 ratio."
             };
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = conleche, Ingredient = coffeePowder, amount = 8 });
 
             var crema = new Coffee
             {
-                Name = "Café crema",
+                Name = "CafÃ© crema",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299733/coffee/caf%C3%A9crema.jpg",
                 Price = "3",
                 Strength = 4,
@@ -195,22 +219,22 @@ namespace coffee.Api.Migrations
 
             var cubano = new Coffee
             {
-                Name = "Café cubano",
+                Name = "CafÃ© cubano",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299733/coffee/caf%C3%A9cubano.jpg",
                 Price = "4",
                 Strength = 5,
-                Description = "Café cubano is a type of espresso that originated in Cuba. Specifically, it refers to an espresso shot which is sweetened with demerara sugar which has been whipped with the first and strongest drops of espresso."
+                Description = "CafÃ© cubano is a type of espresso that originated in Cuba. Specifically, it refers to an espresso shot which is sweetened with demerara sugar which has been whipped with the first and strongest drops of espresso."
             };
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = cubano, Ingredient = coffeePowder, amount = 8 });
 
             var tiempo = new Coffee
             {
-                Name = "Café del tiempo",
+                Name = "CafÃ© del tiempo",
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299733/coffee/caf%C3%A9deltiempo.jpg",
                 Price = "4",
                 Strength = 3,
-                Description = "The coffee, an espresso or café solo, is served in one cup freshly brewed. On the side is a glass of ice, spiked with a slice of lemon. The coffee is poured over the ice by the customer before drinking."
+                Description = "The coffee, an espresso or cafÃ© solo, is served in one cup freshly brewed. On the side is a glass of ice, spiked with a slice of lemon. The coffee is poured over the ice by the customer before drinking."
             };
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = tiempo, Ingredient = coffeePowder, amount = 8 });
@@ -257,7 +281,7 @@ namespace coffee.Api.Migrations
                 ImagePath = "https://res.cloudinary.com/dctmxbu9q/image/upload/v1540299733/coffee/cortadito.jpg",
                 Price = "3",
                 Strength = 5,
-                Description = "Strong coffee beverage served hot at Cuban cafés, often sweetened. Similar to Italian espresso."
+                Description = "Strong coffee beverage served hot at Cuban cafï¿½s, often sweetened. Similar to Italian espresso."
             };
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = cortadito, Ingredient = coffeePowder, amount = 8 });
