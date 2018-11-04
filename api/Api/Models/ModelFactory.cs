@@ -56,6 +56,7 @@ namespace coffee.Api.Models
 
             return new OrderReturnModel
             {
+                Id = op.OrderedProductId,
                 Name = op.Coffee.Name,
                 ImagePath = op.Coffee.ImagePath,
                 Price = op.Coffee.Price,

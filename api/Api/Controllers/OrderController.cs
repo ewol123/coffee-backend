@@ -314,6 +314,41 @@ namespace Api.Controllers
 
         }
 
+        [Authorize(Roles = "User, Admin")]
+        [Route("deleteProduct")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> deleteProduct(int id)
+        {
+            try
+            {
+                var db = ApplicationDbContext.Create();
+
+                var orderedProduct = await db.OrderedProducts.FirstOrDefaultAsync(op => op.OrderedProductId == id);
+
+                if (orderedProduct == null)
+                {
+                    return BadRequest();
+                }
+
+                db.OrderedProducts.Remove(orderedProduct);
+
+                var deleteResult = await db.SaveChangesAsync();
+
+                if (deleteResult == 0)
+                {
+                    return BadRequest("cannot be deleted");
+                }
+
+                return Ok("deleted");
+
+
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.ToString());
+            }
+        }
 
     }
 }
