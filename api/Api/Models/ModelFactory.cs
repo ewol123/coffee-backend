@@ -49,22 +49,30 @@ namespace coffee.Api.Models
             };
         }
 
-        public OrderReturnModel Create(OrderedProduct op) {
+        public List<OrderReturnModel> Create(List<OrderedProduct> orderedProduct) {
 
-            var price = int.Parse(op.Coffee.Price);
-            var totalPrice = op.Quantity * price;
+            List<OrderReturnModel> OrderedProductList = new List<OrderReturnModel>();
 
-            return new OrderReturnModel
-            {
-                Id = op.OrderedProductId,
-                Name = op.Coffee.Name,
-                ImagePath = op.Coffee.ImagePath,
-                Price = op.Coffee.Price,
-                Description = op.Coffee.Description,
-                Strength = op.Coffee.Strength,
-                Quantity = op.Quantity,
-                TotalPrice = totalPrice,
-            };
+            foreach (var op in orderedProduct) {
+
+                var price = int.Parse(op.Coffee.Price);
+                var totalPrice = op.Quantity * price;
+
+                OrderedProductList.Add(new OrderReturnModel
+                {
+                    Id = op.OrderedProductId,
+                    Name = op.Coffee.Name,
+                    ImagePath = op.Coffee.ImagePath,
+                    Price = op.Coffee.Price,
+                    Description = op.Coffee.Description,
+                    Strength = op.Coffee.Strength,
+                    Quantity = op.Quantity,
+                    TotalPrice = totalPrice,
+                });
+
+            }
+
+            return OrderedProductList;
 
         }
 
@@ -95,6 +103,7 @@ namespace coffee.Api.Models
 
         public class OrderReturnModel
         {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }
         public string Price { get; set; }
@@ -104,11 +113,7 @@ namespace coffee.Api.Models
         public int TotalPrice { get; set; }
         }
 
-    public class OrdersReturnModel
-    {
-        public int AllPrice { get; set; }
-        public List<OrderReturnModel> orders { get; set; }
-    }
+  
 
 
 

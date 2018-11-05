@@ -130,27 +130,7 @@ namespace Api.Controllers
 
                 var orderedProducts = await db.OrderedProducts.Include("Coffee").Where(op => op.OrderId == order.OrderId).ToListAsync();
 
-                List<OrderReturnModel> orderReturnModels = new List<OrderReturnModel>();
-
-                foreach (var op in orderedProducts) {
-
-                    orderReturnModels.Add(TheModelFactory.Create(op));
-                    
-                }
-
-                int allPrice = 0;
-                foreach (var orders in orderReturnModels) {
-                    allPrice += orders.TotalPrice;
-                }
-
-                var orderList = new OrdersReturnModel {
-                 AllPrice = allPrice,
-                 orders = orderReturnModels
-                };
-
-
-
-                return Ok(orderList);
+                return Ok(TheModelFactory.Create(orderedProducts));
              }
             catch (Exception e)
             {
