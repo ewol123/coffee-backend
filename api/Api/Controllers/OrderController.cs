@@ -23,115 +23,48 @@ namespace Api.Controllers
 
 
         [Authorize(Roles = "User, Admin")]
-        [Route("create")]
-        public async Task<IHttpActionResult> CreateOrder(OrderBindingModel orderBindingModel)
+        [Route("")]
+        public async Task<IHttpActionResult> GetOrders()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var db = ApplicationDbContext.Create();
 
             try
             {
-                var user = await db.Users.Include("Orders").FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
+                var db = ApplicationDbContext.Create();
 
-                if (user == null)
-                {
-                    return BadRequest("user not found");
-                }
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
 
-
-                var tableNum = int.Parse(orderBindingModel.TableNum);
-                var quantity = int.Parse(orderBindingModel.Quantity);
-                var productId = int.Parse(orderBindingModel.ProductId);
-
-                var coffee = await db.Coffees.FirstOrDefaultAsync(c => c.CoffeeId == productId);
-
-
-                if (coffee == null) {
-                    return BadRequest("coffee not found");
-                }
+                if (user == null) return NotFound();
 
                 var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
 
-                if (order == null)
-                {
 
-                    var coffeePrice = int.Parse(coffee.Price);
-                    var price = coffeePrice  * quantity;
+                if (order == null) return NotFound();
+                
 
-                     order = new Order
-                    {
-                        ApplicationUser = user,
-                        PaymentMethod = "online",
-                        TotalPrice = price,
-                        Status = "draft",
-                        TableNum = tableNum,
-                        Payed = false
+                var orderedProducts = await db.OrderedProducts.Include("Coffee").Where(op => op.OrderId == order.OrderId).ToListAsync();
 
-                    };
+                return Ok(TheModelFactory.Create(orderedProducts));
+             }
+            catch (Exception e)
+            {
 
-                    db.Orders.Add(order);
-
-                    var orderedProduct = new OrderedProduct
-                    {
-                     Coffee = coffee,
-                     Order = order,
-                     Quantity = quantity
-                    };
-
-                    db.OrderedProducts.Add(orderedProduct);
-
-
-                    var saveChangesResult = await db.SaveChangesAsync();
-
-                    if (saveChangesResult == 0) 
-                    {
-                        return BadRequest("cannot be created");
-                    }
-
-
-                    return Created("ok","created");
-                }
-
-
-                return BadRequest("order already exists");
-            }
-            catch (Exception e ) {
                 return BadRequest(e.ToString());
             }
 
         }
 
         [Authorize(Roles = "User, Admin")]
-        [Route("")]
-        public async Task<IHttpActionResult> GetOrders(OrderBindingModel orderBindingModel)
+        [Route("order/{coffeeId}")]
+        public async Task<IHttpActionResult> GetCoffee(int coffeeId)
         {
-
-            var db = ApplicationDbContext.Create();
-
             try
             {
-                var user = await db.Users.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
+                var db = ApplicationDbContext.Create();
 
-                if (user == null)
-                {
-                    return NotFound();
-                }
+                var coffee = await db.Coffees.FirstOrDefaultAsync(c => c.CoffeeId == coffeeId);
 
-                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
-
-
-                if (order == null) {
-                    return NotFound();
-                }
-
-                var orderedProducts = await db.OrderedProducts.Include("Coffee").Where(op => op.OrderId == order.OrderId).ToListAsync();
-
-                return Ok(TheModelFactory.Create(orderedProducts));
-             }
+                return Ok(TheModelFactory.Create(coffee));
+            }
             catch (Exception e)
             {
 
@@ -152,27 +85,52 @@ namespace Api.Controllers
 
                 var user = await db.Users.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
 
-                if (user == null)
-                {
-                    return NotFound();
-                }
+                if (user == null) return NotFound();
 
-
+                var tableNum = int.Parse(orderBindingModel.TableNum);
                 var quantity = int.Parse(orderBindingModel.Quantity);
                 var productId = int.Parse(orderBindingModel.ProductId);
 
                 var coffee = await db.Coffees.FirstOrDefaultAsync(c => c.CoffeeId == productId);
 
 
-                if (coffee == null)
-                {
-                    return NotFound();
-                }
+                if (coffee == null) return NotFound();
 
                 var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
 
                 if (order == null) {
-                    return BadRequest();
+
+                    var coffeePrice = int.Parse(coffee.Price);
+                    var price = coffeePrice * quantity;
+
+                    order = new Order
+                    {
+                        ApplicationUser = user,
+                        PaymentMethod = "online",
+                        TotalPrice = price,
+                        Status = "draft",
+                        TableNum = tableNum,
+                        Payed = false
+
+                    };
+
+                    db.Orders.Add(order);
+
+                    var newOrderedProduct = new OrderedProduct
+                    {
+                        Coffee = coffee,
+                        Order = order,
+                        Quantity = quantity
+                    };
+
+                    db.OrderedProducts.Add(newOrderedProduct);
+
+
+                    var saveChangesResult = await db.SaveChangesAsync();
+
+                    if (saveChangesResult == 0) return BadRequest("cannot be created");
+
+                    return Created("ok", "created");
                 }
 
                 var orderedProduct = await db.OrderedProducts.Where(op => op.OrderId == order.OrderId && op.CoffeeId == coffee.CoffeeId).FirstOrDefaultAsync();
@@ -191,20 +149,17 @@ namespace Api.Controllers
 
                     var saveChangesResult = await db.SaveChangesAsync();
 
-                    if (saveChangesResult == 0)
-                    {
-                        return BadRequest("cannot be created");
-                    }
+                    if (saveChangesResult == 0) return BadRequest("cannot be created");
+
                     return Created("ok", "product added");
                 }
 
                 orderedProduct.Quantity += quantity;
                 var updateResult = await db.SaveChangesAsync();
 
-                if (updateResult == 0)
-                {
-                    return BadRequest("cannot be updated");
-                }
+                if (updateResult == 0) return BadRequest("cannot be updated");
+
+                
 
                 return Ok("updated");
 
@@ -230,65 +185,58 @@ namespace Api.Controllers
 
                 var user = await db.Users.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
 
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
+                if (user == null) return NotFound();
 
                 var quantity = int.Parse(orderBindingModel.Quantity);
                 var productId = int.Parse(orderBindingModel.ProductId);
 
                 var coffee = await db.Coffees.FirstOrDefaultAsync(c => c.CoffeeId == productId);
 
-
-                if (coffee == null)
-                {
-                    return NotFound();
-                }
+                if (coffee == null) return NotFound();
 
                 var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
 
-                if (order == null)
-                {
-                    return BadRequest();
-                }
+                if (order == null) return BadRequest();
 
-                var orderedProduct = await db.OrderedProducts.Where(op => op.OrderId == order.OrderId && op.CoffeeId == coffee.CoffeeId).FirstOrDefaultAsync();
 
-                if (orderedProduct == null)
-                {
-                    return BadRequest();
-                }
+                var orderedProduct = await db.OrderedProducts.FirstOrDefaultAsync(op => op.OrderId == order.OrderId && op.CoffeeId == coffee.CoffeeId);
+
+                if (orderedProduct == null) return BadRequest();
+
 
                 if (orderedProduct.Quantity == 1) {
                     db.OrderedProducts.Remove(orderedProduct);
 
                     var deleteResult = await db.SaveChangesAsync();
 
-                    if (deleteResult == 0)
+                    if (deleteResult == 0) return BadRequest("cannot be deleted");
+
+                    var checkOrderedProducts = await db.OrderedProducts.Where(op => op.OrderId == order.OrderId).ToListAsync();
+
+                    if (checkOrderedProducts.Count < 1)
                     {
-                        return BadRequest("cannot be deleted");
+                        order.Status = "inactive";
+                        var updateStatus = await db.SaveChangesAsync();
+
+                        if (updateStatus == 0) return BadRequest("cannot set to inactive");
+                        return Ok("deleted");
                     }
-
                     return Ok("deleted");
-
                 }
 
                 orderedProduct.Quantity -= quantity;
                 var updateResult = await db.SaveChangesAsync();
 
-                if (updateResult == 0)
-                {
-                    return BadRequest("cannot be updated");
-                }
+                if (updateResult == 0) return BadRequest("cannot be updated");
+
+                
+             
 
                 return Ok("decreased");
 
             }
             catch (Exception e)
             {
-
                 return BadRequest(e.ToString());
             }
 
@@ -303,20 +251,31 @@ namespace Api.Controllers
             {
                 var db = ApplicationDbContext.Create();
 
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
+
+                if (user == null) return NotFound();
+
                 var orderedProduct = await db.OrderedProducts.FirstOrDefaultAsync(op => op.OrderedProductId == id);
 
-                if (orderedProduct == null)
-                {
-                    return BadRequest();
-                }
+                if (orderedProduct == null) return BadRequest();
 
                 db.OrderedProducts.Remove(orderedProduct);
 
                 var deleteResult = await db.SaveChangesAsync();
 
-                if (deleteResult == 0)
+                if (deleteResult == 0) return BadRequest("cannot be deleted");
+
+
+                var checkOrder = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
+                var checkOrderedProducts = await db.OrderedProducts.Where(op => op.OrderId == checkOrder.OrderId).ToListAsync();
+
+                if (checkOrderedProducts.Count < 1)
                 {
-                    return BadRequest("cannot be deleted");
+                    checkOrder.Status = "inactive";
+                    var updateStatus = await db.SaveChangesAsync();
+
+                    if (updateStatus == 0) return BadRequest("cannot set to inactive");
+
                 }
 
                 return Ok("deleted");

@@ -68,11 +68,26 @@ namespace coffee.Api.Models
                     Strength = op.Coffee.Strength,
                     Quantity = op.Quantity,
                     TotalPrice = totalPrice,
+                    CoffeeId = op.Coffee.CoffeeId
                 });
 
             }
 
             return OrderedProductList;
+
+        }
+
+        public CoffeeReturnModel Create(Coffee coffee) {
+
+            return new CoffeeReturnModel
+            {
+                Id = coffee.CoffeeId,
+                Name = coffee.Name,
+                ImagePath = coffee.ImagePath,
+                Price = coffee.Price,
+                Description = coffee.Description,
+                Strength = coffee.Strength
+            };
 
         }
 
@@ -111,7 +126,19 @@ namespace coffee.Api.Models
         public int Strength { get; set; }
         public int Quantity { get; set; }
         public int TotalPrice { get; set; }
-        }
+        public int CoffeeId { get; set; }
+    }
+
+        public class CoffeeReturnModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ImagePath { get; set; }
+        public string Price { get; set; }
+        public string Description { get; set; }
+        public int Strength { get; set; }
+
+    }
 
   
 
