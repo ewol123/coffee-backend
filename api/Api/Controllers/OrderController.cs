@@ -35,16 +35,16 @@ namespace Api.Controllers
 
                 if (user == null) return NotFound();
 
-                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
+                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && o.Status.Equals("draft"));
 
 
                 if (order == null) return NotFound();
-                
+
 
                 var orderedProducts = await db.OrderedProducts.Include("Coffee").Where(op => op.OrderId == order.OrderId).ToListAsync();
 
                 return Ok(TheModelFactory.Create(orderedProducts));
-             }
+            }
             catch (Exception e)
             {
 
@@ -96,9 +96,10 @@ namespace Api.Controllers
 
                 if (coffee == null) return NotFound();
 
-                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
+                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && o.Status.Equals("draft"));
 
-                if (order == null) {
+                if (order == null)
+                {
 
                     var coffeePrice = int.Parse(coffee.Price);
                     var price = coffeePrice * quantity;
@@ -135,7 +136,8 @@ namespace Api.Controllers
 
                 var orderedProduct = await db.OrderedProducts.Where(op => op.OrderId == order.OrderId && op.CoffeeId == coffee.CoffeeId).FirstOrDefaultAsync();
 
-                if (orderedProduct == null) {
+                if (orderedProduct == null)
+                {
 
                     orderedProduct = new OrderedProduct
                     {
@@ -159,7 +161,7 @@ namespace Api.Controllers
 
                 if (updateResult == 0) return BadRequest("cannot be updated");
 
-                
+
 
                 return Ok("updated");
 
@@ -176,7 +178,7 @@ namespace Api.Controllers
         [Authorize(Roles = "User, Admin")]
         [Route("decreaseProduct")]
         [HttpPost]
-        public async Task<IHttpActionResult> decreaseProduct(OrderBindingModel orderBindingModel)
+        public async Task<IHttpActionResult> DecreaseProduct(OrderBindingModel orderBindingModel)
         {
             try
             {
@@ -194,7 +196,7 @@ namespace Api.Controllers
 
                 if (coffee == null) return NotFound();
 
-                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
+                var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && o.Status.Equals("draft"));
 
                 if (order == null) return BadRequest();
 
@@ -204,7 +206,8 @@ namespace Api.Controllers
                 if (orderedProduct == null) return BadRequest();
 
 
-                if (orderedProduct.Quantity == 1) {
+                if (orderedProduct.Quantity == 1)
+                {
                     db.OrderedProducts.Remove(orderedProduct);
 
                     var deleteResult = await db.SaveChangesAsync();
@@ -229,8 +232,8 @@ namespace Api.Controllers
 
                 if (updateResult == 0) return BadRequest("cannot be updated");
 
-                
-             
+
+
 
                 return Ok("decreased");
 
@@ -245,7 +248,7 @@ namespace Api.Controllers
         [Authorize(Roles = "User, Admin")]
         [Route("deleteProduct")]
         [HttpDelete]
-        public async Task<IHttpActionResult> deleteProduct(int id)
+        public async Task<IHttpActionResult> DeleteProduct(int id)
         {
             try
             {
@@ -266,7 +269,7 @@ namespace Api.Controllers
                 if (deleteResult == 0) return BadRequest("cannot be deleted");
 
 
-                var checkOrder = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && !o.Status.Equals("inactive"));
+                var checkOrder = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && o.Status.Equals("draft"));
                 var checkOrderedProducts = await db.OrderedProducts.Where(op => op.OrderId == checkOrder.OrderId).ToListAsync();
 
                 if (checkOrderedProducts.Count < 1)
@@ -289,5 +292,56 @@ namespace Api.Controllers
             }
         }
 
+
+
+        [Authorize(Roles = "User, Admin")]
+        [Route("updateOrder")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateOrder(string paymentMethod)
+        {
+            try
+            {
+                var db = ApplicationDbContext.Create();
+
+                var user = await db.Users
+                    .Include("Orders")
+                    .Include(i => i.Orders.Select(o => o.OrderedProducts))
+                    .Include(i => i.Orders.Select(o => o.OrderedProducts.Select(op => op.Coffee))).FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));
+
+                if (user == null) return NotFound();
+
+                var order = user.Orders.Where(o => o.Status.Equals("draft")).FirstOrDefault();
+                order.PaymentMethod = paymentMethod;
+
+                order.Payed = paymentMethod.Equals("online") ? true : false;
+
+                order.Status = "placed";
+
+                var orderedProducts = order.OrderedProducts;
+
+                var totalPrice = 0;
+                foreach (var product in orderedProducts) {
+
+                    totalPrice += int.Parse(product.Coffee.Price) * product.Quantity;
+
+                }
+
+                order.TotalPrice = totalPrice;
+
+                var updateStatus = await db.SaveChangesAsync();
+
+                if (updateStatus == 0) return BadRequest("Cannot complete order");
+
+                return Ok("Order Placed");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.ToString());
+                
+            }
+
+
+        }
     }
+
 }
