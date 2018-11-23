@@ -1,4 +1,5 @@
-﻿using coffee.Api.Models;
+﻿using coffee.Api.Infrastructure;
+using coffee.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,42 +15,38 @@ namespace coffee.Api.Controllers
     public class CoffeeController : BaseApiController
     {
 
-
-
         [AllowAnonymous]
         [Route("pagination")]
         public IHttpActionResult GetCoffees(int page, int itemsPerPage, string query = "")
         {
-            //formula: page -1 * itemsPerPage = eredmény   limit five
             int skipAmount = (page - 1) * itemsPerPage;
 
-             var coffees = query == "all" 
-                ? applicationDbContext.Coffees
-                          .OrderBy(c => c.CoffeeId)
-                          .Skip(skipAmount)
-                          .Take(itemsPerPage)
-                          
-               
-
-                : applicationDbContext.Coffees
-                          .OrderBy(c=> c.CoffeeId)
-                          .Where(c => c.Name.Contains(query))
-                          .Skip(skipAmount)
-                          .Take(itemsPerPage);
+            var coffees = query == "all"
+               ? applicationDbContext.Coffees
+                         .OrderBy(c => c.CoffeeId)
+                         .Skip(skipAmount)
+                         .Take(itemsPerPage)
 
 
 
-            if (coffees != null) {
+               : applicationDbContext.Coffees
+                         .OrderBy(c => c.CoffeeId)
+                         .Where(c => c.Name.Contains(query))
+                         .Skip(skipAmount)
+                         .Take(itemsPerPage);
+
+
+
+            if (coffees != null)
+            {
 
                 return Ok(coffees);
             }
-                          
+
 
             return NotFound();
-
-
         }
 
-
+       
     }
 }

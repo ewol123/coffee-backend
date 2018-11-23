@@ -3,7 +3,7 @@ namespace coffee.Api.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class firstCommit : DbMigration
+    public partial class firstcommit : DbMigration
     {
         public override void Up()
         {
@@ -26,6 +26,7 @@ namespace coffee.Api.Migrations
                         ImagePath = c.String(nullable: false, maxLength: 400),
                         Price = c.String(nullable: false, maxLength: 100),
                         Description = c.String(nullable: false, maxLength: 400),
+                        Strength = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.CoffeeId);
             
@@ -146,20 +147,6 @@ namespace coffee.Api.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
-                "dbo.ProductCompositions",
-                c => new
-                    {
-                        CompositionId = c.Int(nullable: false, identity: true),
-                        Material = c.String(nullable: false, maxLength: 100),
-                        Amount = c.Int(nullable: false),
-                        Unit = c.String(nullable: false),
-                        CoffeeId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.CompositionId)
-                .ForeignKey("dbo.Coffees", t => t.CoffeeId)
-                .Index(t => t.CoffeeId);
-            
-            CreateTable(
                 "dbo.Roles",
                 c => new
                     {
@@ -169,12 +156,26 @@ namespace coffee.Api.Migrations
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true, name: "RoleNameIndex");
             
+            CreateTable(
+                "dbo.FavoriteCoffees",
+                c => new
+                    {
+                        CoffeeId = c.Int(nullable: false),
+                        UserId = c.String(nullable: false, maxLength: 128),
+                    })
+                .PrimaryKey(t => new { t.CoffeeId, t.UserId })
+                .ForeignKey("dbo.Coffees", t => t.CoffeeId, cascadeDelete: true)
+                .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.CoffeeId)
+                .Index(t => t.UserId);
+            
         }
         
         public override void Down()
         {
             DropForeignKey("dbo.UserRoles", "RoleId", "dbo.Roles");
-            DropForeignKey("dbo.ProductCompositions", "CoffeeId", "dbo.Coffees");
+            DropForeignKey("dbo.FavoriteCoffees", "UserId", "dbo.Users");
+            DropForeignKey("dbo.FavoriteCoffees", "CoffeeId", "dbo.Coffees");
             DropForeignKey("dbo.OrderedProducts", "OrderId", "dbo.Orders");
             DropForeignKey("dbo.Orders", "ApplicationUserId", "dbo.Users");
             DropForeignKey("dbo.UserRoles", "UserId", "dbo.Users");
@@ -183,8 +184,9 @@ namespace coffee.Api.Migrations
             DropForeignKey("dbo.OrderedProducts", "CoffeeId", "dbo.Coffees");
             DropForeignKey("dbo.IngredientCoffees", "Ingredient_Id", "dbo.Ingredients");
             DropForeignKey("dbo.IngredientCoffees", "Coffee_Id", "dbo.Coffees");
+            DropIndex("dbo.FavoriteCoffees", new[] { "UserId" });
+            DropIndex("dbo.FavoriteCoffees", new[] { "CoffeeId" });
             DropIndex("dbo.Roles", "RoleNameIndex");
-            DropIndex("dbo.ProductCompositions", new[] { "CoffeeId" });
             DropIndex("dbo.UserRoles", new[] { "RoleId" });
             DropIndex("dbo.UserRoles", new[] { "UserId" });
             DropIndex("dbo.UserLogins", new[] { "UserId" });
@@ -195,8 +197,8 @@ namespace coffee.Api.Migrations
             DropIndex("dbo.OrderedProducts", new[] { "OrderId" });
             DropIndex("dbo.IngredientCoffees", new[] { "Ingredient_Id" });
             DropIndex("dbo.IngredientCoffees", new[] { "Coffee_Id" });
+            DropTable("dbo.FavoriteCoffees");
             DropTable("dbo.Roles");
-            DropTable("dbo.ProductCompositions");
             DropTable("dbo.UserRoles");
             DropTable("dbo.UserLogins");
             DropTable("dbo.UserClaims");

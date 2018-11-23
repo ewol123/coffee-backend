@@ -8,8 +8,6 @@ namespace coffee.Api.Entities
     public class IngredientCoffees
     {
 
-
-
         public int Coffee_Id { get; set; }
 
         public int Ingredient_Id { get; set; }

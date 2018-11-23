@@ -77,6 +77,17 @@ namespace coffee.Api.Infrastructure
                 .HasRequired(ic => ic.Ingredient)
                 .WithMany(ic => ic.Coffees)
                 .HasForeignKey(ic => ic.Ingredient_Id);
+          
+            //favorite
+            builder.Entity<Coffee>()
+              .HasMany<ApplicationUser>(b => b.Users) 
+              .WithMany(u => u.Coffees)
+              .Map(cs =>
+              {
+                  cs.MapLeftKey("CoffeeId");
+                  cs.MapRightKey("UserId");
+                  cs.ToTable("FavoriteCoffees");
+              });
 
         }
 

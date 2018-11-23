@@ -29,6 +29,7 @@ namespace Api.Controllers
 
             try
             {
+               
                 var db = ApplicationDbContext.Create();
 
                 var user = await db.Users.FirstOrDefaultAsync(u => u.Email.Equals(User.Identity.Name));

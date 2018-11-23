@@ -7,13 +7,13 @@ namespace coffee.Api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class coffeeStrength : IMigrationMetadata
+    public sealed partial class firstcommit : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(coffeeStrength));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(firstcommit));
         
         string IMigrationMetadata.Id
         {
-            get { return "201810272253147_coffeeStrength"; }
+            get { return "201811231832370_firstcommit"; }
         }
         
         string IMigrationMetadata.Source

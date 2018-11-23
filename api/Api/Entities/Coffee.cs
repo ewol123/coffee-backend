@@ -1,4 +1,5 @@
-﻿using System;
+﻿using coffee.Api.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,6 +38,6 @@ namespace coffee.Api.Entities
         public virtual ICollection<IngredientCoffees> Ingredients { get; set; }
         public virtual ICollection<OrderedProduct> OrderedProducts { get; set; }
 
-
+        public virtual ICollection<ApplicationUser> Users { get; set; }
     }
 }

@@ -231,6 +231,7 @@
     <Compile Include="Controllers\AudienceController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\CoffeeController.cs" />
+    <Compile Include="Controllers\FavoriteController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Entities\Audience.cs" />
@@ -239,17 +240,9 @@
     <Compile Include="Entities\IngredientCoffees.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\OrderedProduct.cs" />
-    <Compile Include="Migrations\201810272253147_coffeeStrength.cs" />
-    <Compile Include="Migrations\201810272253147_coffeeStrength.Designer.cs">
-      <DependentUpon>201810272253147_coffeeStrength.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201810301323202_UserResetCodes.cs" />
-    <Compile Include="Migrations\201810301323202_UserResetCodes.Designer.cs">
-      <DependentUpon>201810301323202_UserResetCodes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201811021414485_deleteResetCodes.cs" />
-    <Compile Include="Migrations\201811021414485_deleteResetCodes.Designer.cs">
-      <DependentUpon>201811021414485_deleteResetCodes.cs</DependentUpon>
+    <Compile Include="Migrations\201811231832370_firstcommit.cs" />
+    <Compile Include="Migrations\201811231832370_firstcommit.Designer.cs">
+      <DependentUpon>201811231832370_firstcommit.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\OrderBindingModel.cs" />
     <Compile Include="Providers\CustomJwtFormat.cs" />
@@ -257,10 +250,6 @@
     <Compile Include="Infrastructure\ApplicationRoleManager.cs" />
     <Compile Include="Infrastructure\ApplicationUser.cs" />
     <Compile Include="Infrastructure\ApplicationUserManager.cs" />
-    <Compile Include="Migrations\201810192131062_firstCommit.cs" />
-    <Compile Include="Migrations\201810192131062_firstCommit.Designer.cs">
-      <DependentUpon>201810192131062_firstCommit.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AudienceModel.cs" />
@@ -273,17 +262,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201810192131062_firstCommit.resx">
-      <DependentUpon>201810192131062_firstCommit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810272253147_coffeeStrength.resx">
-      <DependentUpon>201810272253147_coffeeStrength.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201810301323202_UserResetCodes.resx">
-      <DependentUpon>201810301323202_UserResetCodes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811021414485_deleteResetCodes.resx">
-      <DependentUpon>201811021414485_deleteResetCodes.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811231832370_firstcommit.resx">
+      <DependentUpon>201811231832370_firstcommit.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

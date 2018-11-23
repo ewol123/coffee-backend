@@ -23,6 +23,7 @@ namespace coffee.Api.Infrastructure
         public DateTime JoinDate { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Coffee> Coffees { get; set; }
 
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
