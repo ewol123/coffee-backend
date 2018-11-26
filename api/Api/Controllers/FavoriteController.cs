@@ -82,29 +82,7 @@ namespace Api.Controllers
 
         }
 
-        [Authorize(Roles = "User, Admin")]
-        [Route("isFavorite")]
-        [HttpGet]
-        public async Task<IHttpActionResult> isFavorite(int id)
-        {
-            try
-            {
-                var db = ApplicationDbContext.Create();
-
-                var coffee = db.Coffees.Include(c => c.Users).FirstOrDefaultAsync(c => c.CoffeeId.Equals(id));
-
-                if (coffee == null) return BadRequest();
-
-                return Ok(coffee.Result.Users.Count > 0 ? true : false);
-
-            }
-            catch (Exception e)
-            {
-
-                return BadRequest(e.ToString());
-            }
-
-        }
+       
 
 
         [Authorize(Roles = "User, Admin")]
