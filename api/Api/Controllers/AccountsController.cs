@@ -1,6 +1,7 @@
 ﻿using coffee.Api.Infrastructure;
 using coffee.Api.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -71,6 +72,9 @@ namespace coffee.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+     
+            
 
             var user = new ApplicationUser()
             {

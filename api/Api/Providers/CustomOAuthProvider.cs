@@ -67,6 +67,8 @@ namespace coffee.Api.Providers
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, context.Options.AuthenticationType);
             oAuthIdentity.AddClaim(new Claim("userId", user.Id));
+            oAuthIdentity.AddClaim(new Claim("client_id", context.ClientId));
+            
             var props = new AuthenticationProperties(new Dictionary<string, string>
                 {
                     {

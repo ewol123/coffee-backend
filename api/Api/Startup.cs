@@ -67,7 +67,8 @@ namespace coffee.Api
         {
 
             var issuer = "http://localhost:5819";
-            string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
+            string androidAudienceId = ConfigurationManager.AppSettings["as:AudienceId"];
+            string staffAudienceId = ConfigurationManager.AppSettings["as:staffAudienceId"];
             byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
 
             // Api controllers with an [Authorize] attribute will be validated with JWT
@@ -75,7 +76,7 @@ namespace coffee.Api
                 new JwtBearerAuthenticationOptions
                 {
                     AuthenticationMode = AuthenticationMode.Active,
-                    AllowedAudiences = new[] { audienceId },
+                    AllowedAudiences = new[] { androidAudienceId, staffAudienceId },
                     IssuerSecurityKeyProviders = new IIssuerSecurityKeyProvider[]
                     {
                         new SymmetricKeyIssuerSecurityKeyProvider(issuer, audienceSecret)
