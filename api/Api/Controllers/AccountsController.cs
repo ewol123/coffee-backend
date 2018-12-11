@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -73,9 +76,6 @@ namespace coffee.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-     
-            
-
             var user = new ApplicationUser()
             {
                 UserName = createUserModel.Email,
@@ -121,7 +121,7 @@ namespace coffee.Api.Controllers
 
             if (result.Succeeded)
             {
-                return Ok("Successfully confirmed email");
+                return Ok(new System.Web.Mvc.ContentResult { Content= "<html><body><h1 style='margin:auto;'>Successfully confirmed email</h1></body></html>", ContentType="text/html" });
             }
             else
             {

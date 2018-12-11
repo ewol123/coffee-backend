@@ -26,8 +26,6 @@ namespace coffee.Api.Migrations
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
 
-
-
             var admin = new ApplicationUser()
             {
                 UserName = "admin@coffeeshop.com",
@@ -39,19 +37,33 @@ namespace coffee.Api.Migrations
 
             manager.Create(admin, "Admin123!");
 
+
+
+
+            var staff = new ApplicationUser()
+            {
+                UserName = "staff@coffeeshop.com",
+                Email = "staff@coffeeshop.com",
+                EmailConfirmed = true,
+                Level = 1,
+                JoinDate = DateTime.Now.AddYears(-3)
+            };
+
+            manager.Create(staff, "Staff123!");
+
             if (roleManager.Roles.Count() == 0)
             {
                 roleManager.Create(new IdentityRole { Name = "SuperAdmin" });
                 roleManager.Create(new IdentityRole { Name = "Admin" });
                 roleManager.Create(new IdentityRole { Name = "User" });
+                roleManager.Create(new IdentityRole { Name = "Staff" });
             }
 
             var adminUser = manager.FindByName("admin@coffeeshop.com");
-
+            var staffUser = manager.FindByName("staff@coffeeshop.com");
             manager.AddToRoles(adminUser.Id, new string[] { "SuperAdmin", "Admin", "User" });
 
-
-
+            manager.AddToRoles(staffUser.Id, new string[] { "Staff" });
             var user = new ApplicationUser()
             {
                 UserName = "user@coffeeshop.com",

@@ -5,6 +5,7 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
@@ -68,7 +69,21 @@ namespace coffee.Api.Providers
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, context.Options.AuthenticationType);
             oAuthIdentity.AddClaim(new Claim("userId", user.Id));
             oAuthIdentity.AddClaim(new Claim("client_id", context.ClientId));
-            
+
+
+            string staffAudienceId = ConfigurationManager.AppSettings["as:staffAudienceId"];
+            if (context.ClientId == staffAudienceId)
+            {
+                 bool isAdmin = await userManager.IsInRoleAsync(user.Id,"SuperAdmin");
+                 bool isStaffMember = await userManager.IsInRoleAsync(user.Id, "Staff");
+
+                if (!isStaffMember && !isAdmin)
+                {
+                    context.SetError("invalid_role","User is not a staff member.");
+                    return;
+                }
+            }   
+
             var props = new AuthenticationProperties(new Dictionary<string, string>
                 {
                     {
