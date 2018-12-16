@@ -33,7 +33,7 @@ namespace coffee.Api
 
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             app.UseWebApi(config);
-
+            app.MapSignalR("/signalr", new Microsoft.AspNet.SignalR.HubConfiguration());
         }
 
         public void ConfigureOAuth(IAppBuilder app)
@@ -69,8 +69,8 @@ namespace coffee.Api
             var issuer = "http://localhost:5819";
             string androidAudienceId = ConfigurationManager.AppSettings["as:AudienceId"];
             string staffAudienceId = ConfigurationManager.AppSettings["as:staffAudienceId"];
-            byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
-
+            byte[] androidSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AndroidSecret"]);
+            byte[] staffSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:StaffSecret"]);
             // Api controllers with an [Authorize] attribute will be validated with JWT
             app.UseJwtBearerAuthentication(
                 new JwtBearerAuthenticationOptions
@@ -79,7 +79,8 @@ namespace coffee.Api
                     AllowedAudiences = new[] { androidAudienceId, staffAudienceId },
                     IssuerSecurityKeyProviders = new IIssuerSecurityKeyProvider[]
                     {
-                        new SymmetricKeyIssuerSecurityKeyProvider(issuer, audienceSecret)
+                        new SymmetricKeyIssuerSecurityKeyProvider(issuer, androidSecret),
+                        new SymmetricKeyIssuerSecurityKeyProvider(issuer, staffSecret)
                     }
                 });
         }

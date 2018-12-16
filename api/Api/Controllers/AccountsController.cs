@@ -109,23 +109,30 @@ namespace coffee.Api.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("ConfirmEmail", Name = "ConfirmEmailRoute")]
-        public async Task<IHttpActionResult> ConfirmEmail(string userId = "", string code = "")
+        public async Task<HttpResponseMessage> ConfirmEmail(string userId = "", string code = "")
         {
+            var response = new HttpResponseMessage();
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
             {
-                ModelState.AddModelError("", "User Id and Code are required");
-                return BadRequest(ModelState);
+                response.Content = new StringContent("<html><body><h1 style='text-align: center;'>User Id and Code are required</h1></body></html>");
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                return response;
             }
 
             IdentityResult result = await this.AppUserManager.ConfirmEmailAsync(userId, code);
 
             if (result.Succeeded)
             {
-                return Ok(new System.Web.Mvc.ContentResult { Content= "<html><body><h1 style='margin:auto;'>Successfully confirmed email</h1></body></html>", ContentType="text/html" });
+               
+                response.Content = new StringContent("<html><body><h1 style='text-align: center;'>Registration successful</h1></body></html>");
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                return  response;
             }
             else
             {
-                return GetErrorResult(result);
+                response.Content = new StringContent("<html><body><h1 style='text-align: center;'>Error, please try again, or register with another email.</h1></body></html>");
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                return response;
             }
         }
 

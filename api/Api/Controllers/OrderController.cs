@@ -1,4 +1,5 @@
 ﻿using Api.Models;
+using Api.Services;
 using coffee.Api.Controllers;
 using coffee.Api.Entities;
 using coffee.Api.Infrastructure;
@@ -14,7 +15,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-
 namespace Api.Controllers
 {
     [RoutePrefix("api/orders")]
@@ -293,6 +293,61 @@ namespace Api.Controllers
             }
         }
 
+        [Authorize(Roles = "Staff, Admin, SuperAdmin")]
+        [Route("placedOrders")]
+        public async Task<IHttpActionResult> GetPlacedOrders()
+        {
+            try
+            {
+                var db = ApplicationDbContext.Create();
+                var orders = await db.Orders.Where(o => o.Status.Equals("placed")).Include("OrderedProducts").Include("OrderedProducts.Coffee").ToListAsync();
+
+                
+
+                if (orders == null) return BadRequest("No orders");
+
+
+                return Ok(TheModelFactory.Create(orders));
+
+
+            }
+            catch (Exception e) {
+                return BadRequest(e.ToString());
+            }
+
+        }
+
+        [Authorize(Roles = "Staff, Admin, SuperAdmin")]
+        [Route("finalizeOrder")]
+        [HttpPut]
+        public async Task<IHttpActionResult> FinalizeOrder(int id,string status)
+        {
+            try
+            {
+                var db = ApplicationDbContext.Create();
+                var order = await db.Orders.Where(o => o.OrderId.Equals(id)).FirstOrDefaultAsync();
+
+
+
+                if (order == null) return BadRequest("No such order");
+
+                order.Status = status;
+
+                var updateStatus = await db.SaveChangesAsync();
+
+                if (updateStatus == 0) return BadRequest("Cannot finalize order");
+
+                return Ok("Order Finalized");
+
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.ToString());
+            }
+
+        }
+
 
 
         [Authorize(Roles = "User, Admin")]
@@ -317,7 +372,7 @@ namespace Api.Controllers
                 order.Payed = paymentMethod.Equals("online") ? true : false;
 
                 order.Status = "placed";
-
+                ServiceStatusHub.PlacedOrdersNotification("Please check status of Orders!");
                 var orderedProducts = order.OrderedProducts;
 
                 var totalPrice = 0;
