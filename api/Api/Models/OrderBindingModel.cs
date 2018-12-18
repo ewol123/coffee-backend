@@ -19,4 +19,14 @@ namespace Api.Models
         public string ProductId { get; set; }
       
     }
+
+    public class FinalizeOrderBindingModel
+    {
+        [Required]
+        public int Id { get; set; }
+
+        [Required]
+        public string Status { get; set; }
+
+    }
 }

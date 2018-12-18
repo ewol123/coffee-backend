@@ -320,24 +320,25 @@ namespace Api.Controllers
         [Authorize(Roles = "Staff, Admin, SuperAdmin")]
         [Route("finalizeOrder")]
         [HttpPut]
-        public async Task<IHttpActionResult> FinalizeOrder(int id,string status)
+        public async Task<IHttpActionResult> FinalizeOrder(FinalizeOrderBindingModel finalizeBindingModel)
         {
             try
             {
                 var db = ApplicationDbContext.Create();
-                var order = await db.Orders.Where(o => o.OrderId.Equals(id)).FirstOrDefaultAsync();
+                var order = await db.Orders.Where(o => o.OrderId.Equals(finalizeBindingModel.Id)).FirstOrDefaultAsync();
 
 
 
                 if (order == null) return BadRequest("No such order");
 
-                order.Status = status;
+                order.Status = finalizeBindingModel.Status;
 
                 var updateStatus = await db.SaveChangesAsync();
 
-                if (updateStatus == 0) return BadRequest("Cannot finalize order");
+                if (updateStatus == 0) return BadRequest("Cannot finalize/refuse order");
+                ServiceStatusHub.FinalizeOrderNotification("Please check status of Orders!");
 
-                return Ok("Order Finalized");
+                return Ok("Order Finalized/Refused");
 
 
             }

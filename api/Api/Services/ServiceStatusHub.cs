@@ -15,5 +15,12 @@ namespace Api.Services
         {
             hubContext.Clients.All.ordersPlaced(message);
         }
+
+        public static void FinalizeOrderNotification(string message)
+        {
+            hubContext.Clients.All.ordersFinalize(message);
+        }
+
+
     }
 }
