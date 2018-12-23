@@ -26,15 +26,12 @@ namespace coffee.Api.Models
         {
             return new UserReturnModel
             {
-                Url = _UrlHelper.Link("GetUserById", new { id = appUser.Id }),
                 Id = appUser.Id,
-                UserName = appUser.UserName,
                 Email = appUser.Email,
                 EmailConfirmed = appUser.EmailConfirmed,
-                Level = appUser.Level,
-                JoinDate = appUser.JoinDate,
+                LockoutEnabled = appUser.LockoutEnabled,
+                LockoutDate = appUser.LockoutEndDateUtc,
                 Roles = _AppUserManager.GetRolesAsync(appUser.Id).Result,
-                Claims = _AppUserManager.GetClaimsAsync(appUser.Id).Result
             };
         }
 
@@ -133,16 +130,12 @@ namespace coffee.Api.Models
 
     public class UserReturnModel
     {
-        public string Url { get; set; }
         public string Id { get; set; }
-        public string UserName { get; set; }
-        public string FullName { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
-        public int Level { get; set; }
-        public DateTime JoinDate { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public DateTime? LockoutDate { get; set; }
         public IList<string> Roles { get; set; }
-        public IList<System.Security.Claims.Claim> Claims { get; set; }
     }
 
 

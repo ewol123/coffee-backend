@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace coffee.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperAdmin")]
     [RoutePrefix("api/roles")]
     public class RolesController : BaseApiController
     {
@@ -83,6 +83,7 @@ namespace coffee.Api.Controllers
         }
 
         [Route("ManageUsersInRole")]
+        [HttpPost]
         public async Task<IHttpActionResult> ManageUsersInRole(UsersInRoleModel model)
         {
             var role = await this.AppRoleManager.FindByIdAsync(model.Id);
