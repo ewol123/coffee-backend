@@ -38,9 +38,7 @@ namespace Api.Controllers
 
                 var order = await db.Orders.FirstOrDefaultAsync(o => o.ApplicationUserId.Equals(user.Id) && o.Status.Equals("draft"));
 
-
                 if (order == null) return NotFound();
-
 
                 var orderedProducts = await db.OrderedProducts.Include("Coffee").Where(op => op.OrderId == order.OrderId).ToListAsync();
 
@@ -81,6 +79,12 @@ namespace Api.Controllers
         {
             try
             {
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
 
                 var db = ApplicationDbContext.Create();
 
@@ -183,6 +187,11 @@ namespace Api.Controllers
         {
             try
             {
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
                 var db = ApplicationDbContext.Create();
 
@@ -324,6 +333,12 @@ namespace Api.Controllers
         {
             try
             {
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 var db = ApplicationDbContext.Create();
                 var order = await db.Orders.Where(o => o.OrderId.Equals(finalizeBindingModel.Id)).FirstOrDefaultAsync();
 

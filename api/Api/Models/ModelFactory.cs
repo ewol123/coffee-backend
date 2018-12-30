@@ -28,7 +28,6 @@ namespace coffee.Api.Models
             {
                 Id = appUser.Id,
                 Email = appUser.Email,
-                EmailConfirmed = appUser.EmailConfirmed,
                 LockoutEnabled = appUser.LockoutEnabled,
                 LockoutDate = appUser.LockoutEndDateUtc,
                 Roles = _AppUserManager.GetRolesAsync(appUser.Id).Result,
@@ -132,7 +131,6 @@ namespace coffee.Api.Models
     {
         public string Id { get; set; }
         public string Email { get; set; }
-        public bool EmailConfirmed { get; set; }
         public bool LockoutEnabled { get; set; }
         public DateTime? LockoutDate { get; set; }
         public IList<string> Roles { get; set; }

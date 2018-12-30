@@ -19,41 +19,50 @@ namespace coffee.Api.Controllers
     public class AccountsController : BaseApiController
     {
 
+
         [AllowAnonymous]
         [Route("create")]
         public async Task<IHttpActionResult> CreateUser(CreateUserBindingModel createUserModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var user = new ApplicationUser()
+                {
+                    UserName = createUserModel.Email,
+                    Email = createUserModel.Email,
+                    Level = 3,
+                    JoinDate = DateTime.Now.Date,
+                };
+
+                IdentityResult addUserResult = await this.AppUserManager.CreateAsync(user, createUserModel.Password);
+
+                if (!addUserResult.Succeeded)
+                {
+                    return GetErrorResult(addUserResult);
+                }
+
+                AppUserManager.AddToRole(user.Id, "User");
+
+                string code = await this.AppUserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+
+                var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
+
+                await this.AppUserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
+
+                return Created(locationHeader, TheModelFactory.Create(user));
             }
-
-            var user = new ApplicationUser()
+            catch (Exception e)
             {
-                UserName = createUserModel.Email,
-                Email = createUserModel.Email,
-                Level = 3,
-                JoinDate = DateTime.Now.Date,
-            };
-
-            IdentityResult addUserResult = await this.AppUserManager.CreateAsync(user, createUserModel.Password);
-
-            if (!addUserResult.Succeeded)
-            {
-                return GetErrorResult(addUserResult);
+                return BadRequest();
             }
-
-            AppUserManager.AddToRole(user.Id, "User");
-
-            string code = await this.AppUserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-
-            var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
-
-            await this.AppUserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-            Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
-
-            return Created(locationHeader, TheModelFactory.Create(user));
 
         }
 
@@ -63,29 +72,40 @@ namespace coffee.Api.Controllers
         [Route("ConfirmEmail", Name = "ConfirmEmailRoute")]
         public async Task<HttpResponseMessage> ConfirmEmail(string userId = "", string code = "")
         {
-            var response = new HttpResponseMessage();
-            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+            try
             {
-                response.Content = new StringContent("<html><body><h1 style='text-align: center;'>User Id and Code are required</h1></body></html>");
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-                return response;
-            }
+                var response = new HttpResponseMessage();
+                if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+                {
+                    response.Content = new StringContent("<html><body><h1 style='text-align: center;'>User Id and Code are required</h1></body></html>");
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                    return response;
+                }
 
-            IdentityResult result = await this.AppUserManager.ConfirmEmailAsync(userId, code);
+                IdentityResult result = await this.AppUserManager.ConfirmEmailAsync(userId, code);
 
-            if (result.Succeeded)
-            {
-               
-                response.Content = new StringContent("<html><body><h1 style='text-align: center;'>Registration successful</h1></body></html>");
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-                return  response;
+                if (result.Succeeded)
+                {
+
+                    response.Content = new StringContent("<html><body><h1 style='text-align: center;'>Registration successful</h1></body></html>");
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                    return response;
+                }
+                else
+                {
+                    response.Content = new StringContent("<html><body><h1 style='text-align: center;'>Error, please try again, or register with another email.</h1></body></html>");
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+                    return response;
+                }
             }
-            else
+            catch (Exception e)
             {
+                var response = new HttpResponseMessage();
                 response.Content = new StringContent("<html><body><h1 style='text-align: center;'>Error, please try again, or register with another email.</h1></body></html>");
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
                 return response;
             }
+          
         }
 
         //change password 
@@ -93,19 +113,28 @@ namespace coffee.Api.Controllers
         [Route("ChangePassword")]
         public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            
-            IdentityResult result = await this.AppUserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
 
-            if (!result.Succeeded)
+            try
             {
-                return GetErrorResult(result);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            return Ok();
+                IdentityResult result = await this.AppUserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+        
         }
 
 
@@ -185,23 +214,31 @@ namespace coffee.Api.Controllers
         public async Task<IHttpActionResult> DeleteUser(string id)
         {
 
-
-            var appUser = await this.AppUserManager.FindByIdAsync(id);
-
-            if (appUser != null)
+            try
             {
-                IdentityResult result = await this.AppUserManager.DeleteAsync(appUser);
+                var appUser = await this.AppUserManager.FindByIdAsync(id);
 
-                if (!result.Succeeded)
+                if (appUser != null)
                 {
-                    return GetErrorResult(result);
+                    IdentityResult result = await this.AppUserManager.DeleteAsync(appUser);
+
+                    if (!result.Succeeded)
+                    {
+                        return GetErrorResult(result);
+                    }
+
+                    return Ok();
+
                 }
 
-                return Ok();
-
+                return NotFound();
             }
+            catch (Exception e)
+            {
 
-            return NotFound();
+                return BadRequest();
+            }
+            
 
         }
 
@@ -209,37 +246,69 @@ namespace coffee.Api.Controllers
         [Route("users")]
         public IHttpActionResult GetUsers()
         {
-            return Ok(this.AppUserManager.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
+            try
+            {
+                return Ok(this.AppUserManager.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+
+            }
         }
 
         [Authorize(Roles = "Admin")]
         [Route("user/{id:guid}", Name = "GetUserById")]
         public async Task<IHttpActionResult> GetUser(string Id)
         {
-            var user = await this.AppUserManager.FindByIdAsync(Id);
 
-            if (user != null)
+            try
             {
-                return Ok(this.TheModelFactory.Create(user));
-            }
+                var user = await this.AppUserManager.FindByIdAsync(Id);
 
-            return NotFound();
+                if (user != null)
+                {
+                    return Ok(this.TheModelFactory.Create(user));
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest();
+            }
+        
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [Route("user/{username}")]
         public async Task<IHttpActionResult> GetUserByName(string username)
         {
-            var user = await this.AppUserManager.FindByNameAsync(username);
-
-            if (user != null)
+            try
             {
-                return Ok(this.TheModelFactory.Create(user));
-            }
+                var user = await this.AppUserManager.FindByNameAsync(username);
 
-            return NotFound();
+                if (user != null)
+                {
+                    return Ok(this.TheModelFactory.Create(user));
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest();
+            }
+         
 
         }
+
+
+
+
     }
 }
