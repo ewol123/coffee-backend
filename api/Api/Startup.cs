@@ -52,7 +52,7 @@ namespace coffee.Api
                 TokenEndpointPath = new PathString("/oauth2/token"),
 
                 //Note to self: Don't change this to 10000, it causes unauthorized error with the token :)
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(10),
                 Provider = new CustomOAuthProvider(),
                 //TODO: CHANGE THIS TO YOUR URL
                 AccessTokenFormat = new CustomJwtFormat("http://localhost:5819")

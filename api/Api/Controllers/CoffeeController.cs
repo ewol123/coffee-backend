@@ -15,7 +15,7 @@ namespace coffee.Api.Controllers
     public class CoffeeController : BaseApiController
     {
 
-        [AllowAnonymous]
+        [Authorize(Roles = "User, Admin")]
         [Route("pagination")]
         public IHttpActionResult GetCoffees(int page, int itemsPerPage, string query = "")
         {
