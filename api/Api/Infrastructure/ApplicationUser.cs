@@ -1,4 +1,4 @@
-﻿using coffee.Api.Entities;
+﻿using resource_server.Api.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace coffee.Api.Infrastructure
+namespace resource_server.Api.Infrastructure
 {
     public class ApplicationUser : IdentityUser
     {

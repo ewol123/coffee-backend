@@ -1,5 +1,5 @@
-﻿using coffee.Api.Infrastructure;
-using coffee.Api.Models;
+﻿using resource_server.Api.Infrastructure;
+using resource_server.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace coffee.Api.Controllers
+namespace resource_server.Api.Controllers
 {
     [RoutePrefix("api/coffees")]
     public class CoffeeController : BaseApiController

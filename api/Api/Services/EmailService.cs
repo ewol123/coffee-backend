@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace coffee.Api.Services
+namespace resource_server.Api.Services
 {
     public class EmailService : IIdentityMessageService
     {

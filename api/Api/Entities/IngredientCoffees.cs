@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coffee.Api.Entities
+namespace resource_server.Api.Entities
 {
     public class IngredientCoffees
     {

@@ -260,8 +260,15 @@
     <Compile Include="Migrations\201811231832370_firstcommit.Designer.cs">
       <DependentUpon>201811231832370_firstcommit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901031833077_refreshtoken.cs" />
+    <Compile Include="Migrations\201901031833077_refreshtoken.Designer.cs">
+      <DependentUpon>201901031833077_refreshtoken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901031836060_refreshtokendbfix.cs" />
+    <Compile Include="Migrations\201901031836060_refreshtokendbfix.Designer.cs">
+      <DependentUpon>201901031836060_refreshtokendbfix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\OrderBindingModel.cs" />
-    <Compile Include="Providers\CustomJwtFormat.cs" />
     <Compile Include="Infrastructure\ApplicationDbContext.cs" />
     <Compile Include="Infrastructure\ApplicationRoleManager.cs" />
     <Compile Include="Infrastructure\ApplicationUser.cs" />
@@ -273,7 +280,6 @@
     <Compile Include="Models\ModelFactory.cs" />
     <Compile Include="Models\PaginationBindingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\CustomOAuthProvider.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\ServiceStatusHub.cs" />
     <Compile Include="Startup.cs" />
@@ -281,6 +287,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201811231832370_firstcommit.resx">
       <DependentUpon>201811231832370_firstcommit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031833077_refreshtoken.resx">
+      <DependentUpon>201901031833077_refreshtoken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031836060_refreshtokendbfix.resx">
+      <DependentUpon>201901031836060_refreshtokendbfix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

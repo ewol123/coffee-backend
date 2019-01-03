@@ -1,5 +1,5 @@
-﻿using coffee.Api.Infrastructure;
-using coffee.Api.Models;
+﻿using resource_server.Api.Infrastructure;
+using resource_server.Api.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 
-namespace coffee.Api.Controllers
+namespace resource_server.Api.Controllers
 {
     //we implement our own api controller which other controllers will use
     public class BaseApiController : ApiController

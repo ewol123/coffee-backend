@@ -1,4 +1,4 @@
-namespace coffee.Api.Migrations
+namespace resource_server.Api.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

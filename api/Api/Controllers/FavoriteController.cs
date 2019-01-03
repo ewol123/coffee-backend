@@ -1,7 +1,7 @@
-﻿using coffee.Api.Controllers;
-using coffee.Api.Entities;
-using coffee.Api.Infrastructure;
-using coffee.Api.Models;
+﻿using resource_server.Api.Controllers;
+using resource_server.Api.Entities;
+using resource_server.Api.Infrastructure;
+using resource_server.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

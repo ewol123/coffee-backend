@@ -1,7 +1,7 @@
-namespace coffee.Api.Migrations
+namespace resource_server.Api.Migrations
 {
-    using coffee.Api.Entities;
-    using coffee.Api.Infrastructure;
+    using resource_server.Api.Entities;
+    using resource_server.Api.Infrastructure;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
     using System;
@@ -11,14 +11,14 @@ namespace coffee.Api.Migrations
     using System.Diagnostics;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<coffee.Api.Infrastructure.ApplicationDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<resource_server.Api.Infrastructure.ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(coffee.Api.Infrastructure.ApplicationDbContext context)
+        protected override void Seed(resource_server.Api.Infrastructure.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 
@@ -83,14 +83,20 @@ namespace coffee.Api.Migrations
             context.Audiences.AddOrUpdate(aud =>aud.ClientId, new Audience {
                 ClientId ="5bd1d38ccf7a428ab3b963ac8bd1e4de",
                 Base64Secret ="8Yf2gwxzD1iL0K7bKciHKDQlKbFKyCYzUc-XfUucsX0",
-                Name ="android audience"
+                Name ="android audience",
+                Active= true,
+                AllowedOrigin="*", 
+                RefreshTokenLifeTime= 14400
              });
 
             context.Audiences.AddOrUpdate(aud => aud.ClientId, new Audience
             {
                 ClientId = "24e5a184d2b1488c8dc97587625260fb",
                 Base64Secret = "kA4kAg4SE4ZXSM5Zg4Su9Al5XyYVd1CiWHQ_P0b3eIc",
-                Name = "staff audience"
+                Name = "staff audience",
+                Active = true,
+                AllowedOrigin = "*",
+                RefreshTokenLifeTime = 14400
             });
 
 

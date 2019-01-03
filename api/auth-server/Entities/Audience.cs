@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace resource_server.Api.Entities
+namespace auth_server
 {
     public class Audience
     {

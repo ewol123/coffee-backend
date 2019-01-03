@@ -1,22 +1,22 @@
-﻿using coffee.Api.Entities;
-using coffee.Api.Models;
+﻿
+using auth_server.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataHandler.Encoder;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Web;
 using Thinktecture.IdentityModel.Tokens;
 
-namespace coffee.Api.Formats
+namespace auth_server.Providers
 {
     public class CustomJwtFormat : ISecureDataFormat<AuthenticationTicket>
     {
-        private const string AudiencePropertyKey = "audience";
+        private const string AudiencePropertyKey = "as:client_id";
 
         private readonly string _issuer = string.Empty;
 
@@ -35,7 +35,8 @@ namespace coffee.Api.Formats
             string id = data.Properties.Dictionary.ContainsKey(AudiencePropertyKey) ? data.Properties.Dictionary[AudiencePropertyKey] : null;
             if (string.IsNullOrWhiteSpace(id)) throw new InvalidOperationException("AuthenticationTicket.Properties does not include audience");
 
-            Audience audience = AudiencesStore.FindAudience(id);
+            var db = ApplicationDbContext.Create();
+            Audience audience = db.Audiences.Find(id);
 
             if (audience == null) throw new InvalidOperationException("Audience not found");
 
@@ -50,7 +51,7 @@ namespace coffee.Api.Formats
             var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(keyByteArray);
 
             var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
-            securityKey,SecurityAlgorithms.HmacSha256Signature);
+            securityKey, SecurityAlgorithms.HmacSha256Signature);
 
 
             var issued = data.Properties.IssuedUtc;

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace coffee.Api.Models
+namespace resource_server.Api.Models
 {
     //this is our model what the client needs to send to our server on registration
     public class CreateUserBindingModel

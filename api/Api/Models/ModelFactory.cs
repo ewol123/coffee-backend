@@ -1,5 +1,5 @@
-﻿using coffee.Api.Entities;
-using coffee.Api.Infrastructure;
+﻿using resource_server.Api.Entities;
+using resource_server.Api.Infrastructure;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http.Routing;
 
-namespace coffee.Api.Models
+namespace resource_server.Api.Models
 {
     //thiss class defines what we return to the requests
     public class ModelFactory

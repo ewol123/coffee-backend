@@ -1,5 +1,5 @@
-﻿using coffee.Api.Entities;
-using coffee.Api.Infrastructure;
+﻿using resource_server.Api.Entities;
+using resource_server.Api.Infrastructure;
 using Microsoft.Owin.Security.DataHandler.Encoder;
 using System;
 using System.Collections.Concurrent;
@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace coffee.Api.Models
+namespace resource_server.Api.Models
 {
 
 

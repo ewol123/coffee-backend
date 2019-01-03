@@ -1,4 +1,4 @@
-﻿using coffee.Api.Entities;
+﻿using resource_server.Api.Entities;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
-namespace coffee.Api.Infrastructure
+namespace resource_server.Api.Infrastructure
 {
     //IdentityDBContext just like the DBContext class is responsible for communicating with the database. the create method returns a new instance of the class
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

@@ -1,4 +1,4 @@
-﻿using coffee.Api.Infrastructure;
+﻿using resource_server.Api.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace coffee.Api.Entities
+namespace resource_server.Api.Entities
 {
     public class Coffee
     {

@@ -1,5 +1,5 @@
-﻿using coffee.Api.Infrastructure;
-using coffee.Api.Models;
+﻿using auth_server.Infrastructure;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace coffee.Api.Providers
+namespace auth_server.Providers
 {
     public class CustomOAuthProvider : OAuthAuthorizationServerProvider
     {
@@ -22,6 +22,7 @@ namespace coffee.Api.Providers
             string clientId = string.Empty;
             string clientSecret = string.Empty;
             string symmetricKeyAsBase64 = string.Empty;
+            Audience audience = null;
 
             if (!context.TryGetBasicCredentials(out clientId, out clientSecret))
             {
@@ -33,15 +34,23 @@ namespace coffee.Api.Providers
                 context.SetError("invalid_clientId", "client_Id is not set");
                 return Task.FromResult<object>(null);
             }
-
-            var audience = AudiencesStore.FindAudience(context.ClientId);
-            
-
+        
+             var db = ApplicationDbContext.Create();
+             audience = db.Audiences.Find(context.ClientId);
             if (audience == null)
             {
                 context.SetError("invalid_clientId", string.Format("Invalid client_id '{0}'", context.ClientId));
                 return Task.FromResult<object>(null);
             }
+
+            if (!audience.Active)
+            {
+                context.SetError("invalid_clientId", "Client is inactive.");
+                return Task.FromResult<object>(null);
+            }
+
+            context.OwinContext.Set<string>("as:clientAllowedOrigin", audience.AllowedOrigin);
+            context.OwinContext.Set<string>("as:clientRefreshTokenLifeTime", audience.RefreshTokenLifeTime.ToString());
 
             context.Validated();
             return Task.FromResult<object>(null);
@@ -50,10 +59,13 @@ namespace coffee.Api.Providers
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
 
-            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+            var allowedOrigin = context.OwinContext.Get<string>("as:clientAllowedOrigin");
+
+            if (allowedOrigin == null) allowedOrigin = "*";
+            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
             
-            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            IdentityUser user = await userManager.FindAsync(context.UserName, context.Password);
             if (user == null)
             {
                 context.SetError("invalid_grant", $"The user name: {context.UserName} or password: {context.Password} is incorrect.");
@@ -65,8 +77,8 @@ namespace coffee.Api.Providers
                 context.SetError("invalid_grant", "User did not confirm email.");
                 return;
             }
-
-            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, context.Options.AuthenticationType);
+            ClaimsIdentity oAuthIdentity = await userManager.CreateIdentityAsync(user, context.Options.AuthenticationType);
+           
             oAuthIdentity.AddClaim(new Claim("userId", user.Id));
             oAuthIdentity.AddClaim(new Claim("client_id", context.ClientId));
 
@@ -87,7 +99,10 @@ namespace coffee.Api.Providers
             var props = new AuthenticationProperties(new Dictionary<string, string>
                 {
                     {
-                         "audience", (context.ClientId == null) ? string.Empty : context.ClientId
+                         "as:client_id", (context.ClientId == null) ? string.Empty : context.ClientId
+                    },
+                     {
+                        "userName", context.UserName
                     }
                 });
 
@@ -95,6 +110,31 @@ namespace coffee.Api.Providers
             
             context.Validated(ticket);
             
+        }
+        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
+        {
+            foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
+            {
+                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+            }
+
+            return Task.FromResult<object>(null);
+        }
+        public override Task GrantRefreshToken(OAuthGrantRefreshTokenContext context)
+        {
+            var originalClient = context.Ticket.Properties.Dictionary["as:client_id"];
+            var currentClient = context.ClientId;
+
+            if (originalClient != currentClient)
+            {
+                context.SetError("invalid_clientId", "Refresh token is issued to a different clientId.");
+                return Task.FromResult<object>(null);
+            }
+
+        
+            context.Validated();
+
+            return Task.FromResult<object>(null);
         }
     }
 }

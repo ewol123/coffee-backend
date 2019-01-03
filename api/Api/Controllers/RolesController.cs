@@ -1,4 +1,4 @@
-﻿using coffee.Api.Models;
+﻿using resource_server.Api.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
-namespace coffee.Api.Controllers
+namespace resource_server.Api.Controllers
 {
     [Authorize(Roles = "Admin, SuperAdmin")]
     [RoutePrefix("api/roles")]

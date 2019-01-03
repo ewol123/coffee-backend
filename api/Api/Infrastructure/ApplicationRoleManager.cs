@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace coffee.Api.Infrastructure
+namespace resource_server.Api.Infrastructure
 {
     public class ApplicationRoleManager : RoleManager<IdentityRole>
     {
