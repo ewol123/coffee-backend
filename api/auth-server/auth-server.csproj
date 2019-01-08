@@ -155,6 +155,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\ApplicationDbContext.cs" />
+    <Compile Include="Migrations\201901061840215_finalauth.cs" />
+    <Compile Include="Migrations\201901061840215_finalauth.Designer.cs">
+      <DependentUpon>201901061840215_finalauth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\AuthRepository.cs" />
     <Compile Include="Entities\Audience.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
@@ -165,6 +170,11 @@
     <Compile Include="Providers\CustomOAuthProvider.cs" />
     <Compile Include="Providers\RefreshTokenProvider.cs" />
     <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201901061840215_finalauth.resx">
+      <DependentUpon>201901061840215_finalauth.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

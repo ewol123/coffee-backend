@@ -3,7 +3,7 @@ namespace resource_server.Api.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class firstcommit : DbMigration
+    public partial class final : DbMigration
     {
         public override void Up()
         {
@@ -11,9 +11,12 @@ namespace resource_server.Api.Migrations
                 "dbo.Audiences",
                 c => new
                     {
-                        ClientId = c.String(nullable: false, maxLength: 32),
-                        Base64Secret = c.String(nullable: false, maxLength: 80),
+                        ClientId = c.String(nullable: false, maxLength: 128),
+                        Base64Secret = c.String(nullable: false),
                         Name = c.String(nullable: false, maxLength: 100),
+                        Active = c.Boolean(nullable: false),
+                        RefreshTokenLifeTime = c.Int(nullable: false),
+                        AllowedOrigin = c.String(maxLength: 100),
                     })
                 .PrimaryKey(t => t.ClientId);
             

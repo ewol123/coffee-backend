@@ -7,13 +7,13 @@ namespace resource_server.Api.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class refreshtokendbfix : IMigrationMetadata
+    public sealed partial class final : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(refreshtokendbfix));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(final));
         
         string IMigrationMetadata.Id
         {
-            get { return "201901031836060_refreshtokendbfix"; }
+            get { return "201901061840005_final"; }
         }
         
         string IMigrationMetadata.Source

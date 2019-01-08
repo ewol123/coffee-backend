@@ -78,26 +78,8 @@ namespace resource_server.Api.Migrations
 
             var normalUser = manager.FindByName("user@coffeeshop.com");
 
-            manager.AddToRoles(normalUser.Id, new string[] {"User"});
+            manager.AddToRoles(normalUser.Id, new string[] { "User" });
 
-            context.Audiences.AddOrUpdate(aud =>aud.ClientId, new Audience {
-                ClientId ="5bd1d38ccf7a428ab3b963ac8bd1e4de",
-                Base64Secret ="8Yf2gwxzD1iL0K7bKciHKDQlKbFKyCYzUc-XfUucsX0",
-                Name ="android audience",
-                Active= true,
-                AllowedOrigin="*", 
-                RefreshTokenLifeTime= 14400
-             });
-
-            context.Audiences.AddOrUpdate(aud => aud.ClientId, new Audience
-            {
-                ClientId = "24e5a184d2b1488c8dc97587625260fb",
-                Base64Secret = "kA4kAg4SE4ZXSM5Zg4Su9Al5XyYVd1CiWHQ_P0b3eIc",
-                Name = "staff audience",
-                Active = true,
-                AllowedOrigin = "*",
-                RefreshTokenLifeTime = 14400
-            });
 
 
 
@@ -143,7 +125,7 @@ namespace resource_server.Api.Migrations
 
             var whippedCream = context.Ingredients.Where(i => i.Name == "whipped cream")
                             .SingleOrDefault();
-            
+
 
             //create initial coffees
             var americano = new Coffee
@@ -153,7 +135,7 @@ namespace resource_server.Api.Migrations
                 Price = "3",
                 Strength = 3,
                 Description = "Americano is a type of coffee drink prepared by diluting an espresso with hot water, giving it a similar strength to, but different flavor from traditionally brewed coffee. The strength of an Americano varies with the number of shots of espresso and the amount of water added."
-                
+
             };
 
             context.IngredientCoffees.AddOrUpdate(new IngredientCoffees { Coffee = americano, Ingredient = coffeePowder, amount = 19 });

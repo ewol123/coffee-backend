@@ -40,7 +40,6 @@ namespace auth_server
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/oauth2/token"),
 
-                //Note to self: Don't change this to 10000, it causes unauthorized error with the token :)
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
                 Provider = new CustomOAuthProvider(),
                 //TODO: CHANGE THIS TO YOUR URL
