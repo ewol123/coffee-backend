@@ -20,8 +20,6 @@ namespace resource_server.Api.Infrastructure
 
         public DbSet<Audience> Audiences { get; set; }
         public DbSet<Coffee> Coffees { get; set; }
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<IngredientCoffees> IngredientCoffees { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderedProduct> OrderedProducts { get; set; }
 
@@ -64,20 +62,6 @@ namespace resource_server.Api.Infrastructure
             .HasForeignKey(o => o.ApplicationUserId)
             .WillCascadeOnDelete(false);
 
-            // coffees and ingredients many-to-many association
-            builder.Entity<IngredientCoffees>()
-                .HasKey(ic => new { ic.Coffee_Id, ic.Ingredient_Id });
-
-            builder.Entity<IngredientCoffees>()
-                .HasRequired(ic => ic.Coffee)
-                .WithMany(ic => ic.Ingredients)
-                .HasForeignKey(ic => ic.Coffee_Id);
-
-            builder.Entity<IngredientCoffees>()
-                .HasRequired(ic => ic.Ingredient)
-                .WithMany(ic => ic.Coffees)
-                .HasForeignKey(ic => ic.Ingredient_Id);
-          
             //favorite
             builder.Entity<Coffee>()
               .HasMany<ApplicationUser>(b => b.Users) 

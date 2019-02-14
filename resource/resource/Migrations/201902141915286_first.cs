@@ -3,7 +3,7 @@ namespace resource_server.Api.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class final : DbMigration
+    public partial class first : DbMigration
     {
         public override void Up()
         {
@@ -32,31 +32,6 @@ namespace resource_server.Api.Migrations
                         Strength = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.CoffeeId);
-            
-            CreateTable(
-                "dbo.IngredientCoffees",
-                c => new
-                    {
-                        Coffee_Id = c.Int(nullable: false),
-                        Ingredient_Id = c.Int(nullable: false),
-                        amount = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.Coffee_Id, t.Ingredient_Id })
-                .ForeignKey("dbo.Coffees", t => t.Coffee_Id, cascadeDelete: true)
-                .ForeignKey("dbo.Ingredients", t => t.Ingredient_Id, cascadeDelete: true)
-                .Index(t => t.Coffee_Id)
-                .Index(t => t.Ingredient_Id);
-            
-            CreateTable(
-                "dbo.Ingredients",
-                c => new
-                    {
-                        IngredientId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false, maxLength: 100),
-                        Amount = c.Int(nullable: false),
-                        Unit = c.String(nullable: false, maxLength: 10),
-                    })
-                .PrimaryKey(t => t.IngredientId);
             
             CreateTable(
                 "dbo.OrderedProducts",
@@ -185,8 +160,6 @@ namespace resource_server.Api.Migrations
             DropForeignKey("dbo.UserLogins", "UserId", "dbo.Users");
             DropForeignKey("dbo.UserClaims", "UserId", "dbo.Users");
             DropForeignKey("dbo.OrderedProducts", "CoffeeId", "dbo.Coffees");
-            DropForeignKey("dbo.IngredientCoffees", "Ingredient_Id", "dbo.Ingredients");
-            DropForeignKey("dbo.IngredientCoffees", "Coffee_Id", "dbo.Coffees");
             DropIndex("dbo.FavoriteCoffees", new[] { "UserId" });
             DropIndex("dbo.FavoriteCoffees", new[] { "CoffeeId" });
             DropIndex("dbo.Roles", "RoleNameIndex");
@@ -198,8 +171,6 @@ namespace resource_server.Api.Migrations
             DropIndex("dbo.Orders", new[] { "ApplicationUserId" });
             DropIndex("dbo.OrderedProducts", new[] { "CoffeeId" });
             DropIndex("dbo.OrderedProducts", new[] { "OrderId" });
-            DropIndex("dbo.IngredientCoffees", new[] { "Ingredient_Id" });
-            DropIndex("dbo.IngredientCoffees", new[] { "Coffee_Id" });
             DropTable("dbo.FavoriteCoffees");
             DropTable("dbo.Roles");
             DropTable("dbo.UserRoles");
@@ -208,8 +179,6 @@ namespace resource_server.Api.Migrations
             DropTable("dbo.Users");
             DropTable("dbo.Orders");
             DropTable("dbo.OrderedProducts");
-            DropTable("dbo.Ingredients");
-            DropTable("dbo.IngredientCoffees");
             DropTable("dbo.Coffees");
             DropTable("dbo.Audiences");
         }

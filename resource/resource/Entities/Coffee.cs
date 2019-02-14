@@ -35,7 +35,6 @@ namespace resource_server.Api.Entities
         public int Strength { get; set; }
 
 
-        public virtual ICollection<IngredientCoffees> Ingredients { get; set; }
         public virtual ICollection<OrderedProduct> OrderedProducts { get; set; }
 
         public virtual ICollection<ApplicationUser> Users { get; set; }

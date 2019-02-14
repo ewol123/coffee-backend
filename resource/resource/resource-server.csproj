@@ -254,13 +254,11 @@
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Entities\Audience.cs" />
     <Compile Include="Entities\Coffee.cs" />
-    <Compile Include="Entities\Ingredient.cs" />
-    <Compile Include="Entities\IngredientCoffees.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\OrderedProduct.cs" />
-    <Compile Include="Migrations\201901061840005_final.cs" />
-    <Compile Include="Migrations\201901061840005_final.Designer.cs">
-      <DependentUpon>201901061840005_final.cs</DependentUpon>
+    <Compile Include="Migrations\201902141915286_first.cs" />
+    <Compile Include="Migrations\201902141915286_first.Designer.cs">
+      <DependentUpon>201902141915286_first.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\OrderBindingModel.cs" />
     <Compile Include="Infrastructure\ApplicationDbContext.cs" />
@@ -279,8 +277,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201901061840005_final.resx">
-      <DependentUpon>201901061840005_final.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902141915286_first.resx">
+      <DependentUpon>201902141915286_first.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

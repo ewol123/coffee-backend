@@ -18,7 +18,6 @@ namespace resource_server.Api.Services
             await configSendGridasync(message);
         }
 
-        // Use NuGet to install SendGrid (Basic C# client lib) 
         private async Task configSendGridasync(IdentityMessage message)
         {
             var myMessage = new SendGridMessage();
@@ -34,7 +33,7 @@ namespace resource_server.Api.Services
             var client = new SendGridClient(ConfigurationManager.AppSettings["as:emailKey"]);
 
 
-            // Send the email.
+            // E-mail küldése
             if (client != null)
             {
                 await client.SendEmailAsync(myMessage);
